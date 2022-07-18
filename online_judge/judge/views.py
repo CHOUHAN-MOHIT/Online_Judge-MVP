@@ -5,6 +5,7 @@ from judge.models import Problem, Solution, Test
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.files import File
+from . import helper
 import subprocess
 import filecmp
 
@@ -18,7 +19,7 @@ def problems(request):
         return render(request , 'problems.html' , { 'problems' : problems})
     else:
         messages.success(request , "Please login to solve problems!!", extra_tags='alert alert-info')
-        return HttpResponseRedirect('/judge/login')
+        return HttpResponseRedirect('/login')
 
 def problem(request , problem_id):
     if request.user.is_authenticated :
@@ -29,52 +30,14 @@ def problem(request , problem_id):
         return render(request, 'problem.html', context)
     else:
         messages.success(request , "Please login to solve problems!!", extra_tags='alert alert-info')
-        return HttpResponseRedirect('/judge/login')
+        return HttpResponseRedirect('/login')
     
-        
-    
-
-# def submit(request , pid):
-#     # fetch problem object using pid and then test with problem_name
-#     problem = Problem.objects.get(pk=pid)
-#     test = Test.objects.get(problem__problem_name=problem.problem_name)
-#     # checking method
-#     if request.method == 'POST':
-#         sol =save_submission(request , problem)
-#         if not sol :
-#             return HttpResponseRedirect('/judge/problem/' + str(pid))
-
-#         sol_id = sol.id
-
-#         name = sol.code_file.url
-#         s_file = 'media/' + name
-#         outfile = 'm.exe'
-#         inputfile = 'media/' + test.test_input.url
-#         testout = 'media/' + test.test_output.url
-
-#         subprocess.call(["g++",s_file,"-o",outfile],shell=True)
-#         k = subprocess.call(["output.exe"],stdin=inputfile ,stdout='media/out_file/p_output.txt',shell=True)
-#         # os.system('g++ ' + s_file + ' -o ' + outfile)
-#         # os.system('echo Evaluating your code..... ')
-#         # os.system(outfile + ' < ' + inputfile + ' > media/out_file/p_output.txt')
-#         result = filecmp.cmp('media/out_file/p_output.txt', testout, shallow=False)
-#         subprocess.call(['del','m.exe'])
-#         if result:
-#             Solution.objects.filter(id=sol_id).update(verdict='AC')
-#             return HttpResponse("Hurray!! You are doing great today. Keep it Up")
-#         else:
-#             Solution.objects.filter(id=sol_id).update(verdict='WA')
-#             return HttpResponse("Failure is not an end of the world")
-        
-#     else:
-#         return HttpResponse("Usage: Message used is not POST.")
-
 
 def submit(request , pid):
     # fetch problem object using pid and then test with problem_name
     problem = Problem.objects.get(pk=pid)
     test = Test.objects.get(problem__problem_name=problem.problem_name)
-#     # checking method
+    # checking method
     if request.method == 'POST':
         # fetching file and code submitted by user
         user_codefile = request.FILES.get('codeFile', False)
@@ -87,8 +50,9 @@ def submit(request , pid):
             # inputfile = 'media/' + test.test_input.url
             out_container = open('mohit.txt' , 'w')
             testout = 'media/' + test.test_output.url
-            subprocess.call(["g++","temp.cpp","-o","temp.exe"],shell=True)
-            k = subprocess.call(['temp.exe'],stdin=test.test_input ,stdout=out_container,shell=True)
+            helper.get_verdict('temp.cpp' , test.test_input)
+            # subprocess.call(["g++","temp.cpp","-o","temp.exe"],shell=True)
+            # k = subprocess.call(['temp.exe'],stdin=test.test_input ,stdout=out_container,shell=True)
             out_container.close()
             if k:
                 return HttpResponse(k.stdout)
@@ -106,7 +70,7 @@ def submit(request , pid):
                     )
                     sol.save()
                     file.close()
-                    return HttpResponseRedirect("/judge/submit/correct_ans/")
+                    return HttpResponseRedirect("/submit/correct_ans/")
                 else:
                     file =  open('temp.cpp')
                     myfile = File(file)
@@ -119,7 +83,7 @@ def submit(request , pid):
                     )
                     sol.save()
                     file.close()
-                    return HttpResponseRedirect("/judge/submit/wrong_ans/")
+                    return HttpResponseRedirect("/submit/wrong_ans/")
         elif codeInEditor:
             
             byte_content = codeInEditor.encode()
@@ -129,13 +93,13 @@ def submit(request , pid):
             # inputfile = 'media/' + test.test_input.url
             out_container = open('mohit.txt' , 'w')
             testout = 'media/' + test.test_output.url
-            subprocess.call(["g++","temp.cpp","-o","temp.exe"],shell=True)
-            k = subprocess.call(['temp.exe'],stdin=test.test_input ,stdout=out_container , stderr=out_container,shell=True)
+            k = helper.get_verdict('temp.cpp' , test.test_input.url)
+            # subprocess.call(["g++","temp.cpp","-o","temp.exe"],shell=True)
+            # k = subprocess.call(['temp.exe'],stdin=test.test_input ,stdout=out_container , stderr=out_container,shell=True)
             out_container.close()
+            result = filecmp.cmp('output.txt', testout, shallow=False)
+            print(result)
             if k :
-                # mo = open(inputfile , 'r')
-                # errorContent = mo.read()
-                # mo.close()
                 return HttpResponse('Internal error occur!!')
             else:
                 result = filecmp.cmp('mohit.txt', testout, shallow=False)
@@ -151,7 +115,7 @@ def submit(request , pid):
                     )
                     sol.save()
                     file.close()
-                    return HttpResponseRedirect("/judge/submit/correct_ans/")
+                    return HttpResponseRedirect("/submit/correct_ans/")
                 else:
                     file =  open('temp.cpp')
                     myfile = File(file)
@@ -164,7 +128,7 @@ def submit(request , pid):
                     )
                     sol.save()
                     file.close()
-                    return HttpResponseRedirect("/judge/submit/wrong_ans/")
+                    return HttpResponseRedirect("/submit/wrong_ans/")
             # return HttpResponse('Yep! I got your code')
         else:
             return HttpResponse('No code file uploaded!!')
@@ -201,10 +165,10 @@ def register_verify(request):
             new_user.first_name = firstname
             new_user.save()
             messages.success(request , "Registration Successful", extra_tags='alert alert-success')
-            return HttpResponseRedirect('/judge/register/')
+            return HttpResponseRedirect('/register/')
         else:
             messages.succes(request , "Both passsword should be same.", extra_tags='alert alert-danger')
-            return HttpResponseRedirect('/judge/register/')
+            return HttpResponseRedirect('/register/')
     else:
         return HttpResponse("Usage: Post method is not used.")
         
@@ -219,14 +183,14 @@ def login_check(request):
         if user is not None:
             login(request, user)
             messages.success(request , "Logged in successfully.", extra_tags='alert alert-success')
-            return HttpResponseRedirect('/judge')
+            return HttpResponseRedirect('/')
         else:
             messages.success(request , "Log in failed!! check username or password.", extra_tags='alert alert-danger')
-            return HttpResponseRedirect('/judge/login/')
+            return HttpResponseRedirect('/login/')
     else:
         return HttpResponse("Usage: Method used is not POST.")
 
 def log_out(request):
     logout(request)
     messages.success(request , "Logout succesfully.", extra_tags='alert alert-success')
-    return HttpResponseRedirect('/judge')
+    return HttpResponseRedirect('/')
