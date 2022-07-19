@@ -1,3 +1,4 @@
+from time import sleep
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate , login , logout
 from django.shortcuts import get_object_or_404, render
@@ -7,7 +8,6 @@ from django.contrib import messages
 from django.core.files import File
 from . import helper
 import subprocess
-import filecmp
 
 # Create your views here.
 def index(request):
@@ -42,93 +42,92 @@ def submit(request , pid):
         # fetching file and code submitted by user
         user_codefile = request.FILES.get('codeFile', False)
         codeInEditor = request.POST.get('codeEditor', False)
+        # if user has submitted code through a file
         if user_codefile:
+            # copy the content of codefile to temp.cpp
             codefile_content = user_codefile.read()
             with open('temp.cpp' , 'wb+') as temp_code:
                 temp_code.write(codefile_content)
             temp_code.close()
-            # inputfile = 'media/' + test.test_input.url
-            out_container = open('mohit.txt' , 'w')
-            testout = 'media/' + test.test_output.url
-            helper.get_verdict('temp.cpp' , test.test_input)
-            # subprocess.call(["g++","temp.cpp","-o","temp.exe"],shell=True)
-            # k = subprocess.call(['temp.exe'],stdin=test.test_input ,stdout=out_container,shell=True)
-            out_container.close()
-            if k:
-                return HttpResponse(k.stdout)
+            # open some useful files and write the desired content
+            expout = open('exp_out.txt' , 'w')
+            output = open('output.txt' , 'w')
+            expout.write(test.test_output)
+            input = bytes(test.test_input , 'utf-8')
+            # get verdict
+            verdict = helper.evalueate(input, output)
+            input.close()
+            expout.close()
+            # check for verdict
+            if verdict:
+                file =  open('temp.cpp')
+                file = File(file)
+                sol = Solution(
+                    user = request.user,
+                    problem=problem,
+                    language=request.POST['language'],
+                    code_file=file,
+                    verdict='AC'
+                )
+                sol.save()
+                file.close()
+                return HttpResponseRedirect("/submit/correct_ans/")
             else:
-                result = filecmp.cmp('mohit.txt', testout, shallow=False)
-                if result:
-                    file =  open('temp.cpp')
-                    myfile = File(file)
-                    sol = Solution(
-                        user = request.user,
-                        problem=problem,
-                        language=request.POST['language'],
-                        code_file=myfile,
-                        verdict='AC'
-                    )
-                    sol.save()
-                    file.close()
-                    return HttpResponseRedirect("/submit/correct_ans/")
-                else:
-                    file =  open('temp.cpp')
-                    myfile = File(file)
-                    sol = Solution(
-                        user = request.user,
-                        problem=problem,
-                        language=request.POST['language'],
-                        code_file=myfile,
-                        verdict='WA'
-                    )
-                    sol.save()
-                    file.close()
-                    return HttpResponseRedirect("/submit/wrong_ans/")
+                file =  open('temp.cpp')
+                file = File(file)
+                sol = Solution(
+                    user = request.user,
+                    problem=problem,
+                    language=request.POST['language'],
+                    code_file=file,
+                    verdict='WA'
+                )
+                sol.save()
+                file.close()
+                return HttpResponseRedirect("/submit/wrong_ans/")
+        # if user submitted the code using code editor 
         elif codeInEditor:
-            
+            # copy the code to temp.cpp
             byte_content = codeInEditor.encode()
             with open('temp.cpp' , 'wb+') as temp_code:
                 temp_code.write(byte_content)
             temp_code.close()
-            # inputfile = 'media/' + test.test_input.url
-            out_container = open('mohit.txt' , 'w')
-            testout = 'media/' + test.test_output.url
-            k = helper.get_verdict('temp.cpp' , test.test_input.url)
-            # subprocess.call(["g++","temp.cpp","-o","temp.exe"],shell=True)
-            # k = subprocess.call(['temp.exe'],stdin=test.test_input ,stdout=out_container , stderr=out_container,shell=True)
-            out_container.close()
-            result = filecmp.cmp('output.txt', testout, shallow=False)
-            print(result)
-            if k :
-                return HttpResponse('Internal error occur!!')
+            # open some useful files and write desired content
+            expout = open('exp_out.txt' , 'w')
+            output = open('output.txt' , 'w')
+            expout.write(test.test_output)
+            # get verdict
+            input = bytes(test.test_input , 'utf-8')
+            verdict = helper.runcode(input, output)
+            expout.close()
+            verdict = helper.get_verdict()
+
+            if verdict == 'AC':
+                # file =  open('temp.cpp')
+                # myfile = File(file)
+                # sol = Solution(
+                #     user = request.user,
+                #     problem=problem,
+                #     language=request.POST['language'],
+                #     code_file=file,
+                #     verdict='AC'
+                # )
+                # sol.save()
+                # file.close()
+                return HttpResponseRedirect("/submit/correct_ans/")
             else:
-                result = filecmp.cmp('mohit.txt', testout, shallow=False)
-                if result:
-                    file =  open('temp.cpp')
-                    myfile = File(file)
-                    sol = Solution(
-                        user = request.user,
-                        problem=problem,
-                        language=request.POST['language'],
-                        code_file=myfile,
-                        verdict='AC'
-                    )
-                    sol.save()
-                    file.close()
-                    return HttpResponseRedirect("/submit/correct_ans/")
-                else:
-                    file =  open('temp.cpp')
-                    myfile = File(file)
-                    sol = Solution(
-                        user = request.user,
-                        problem=problem,
-                        language=request.POST['language'],
-                        code_file=myfile,
-                        verdict='WA'
-                    )
-                    sol.save()
-                    file.close()
-                    return HttpResponseRedirect("/submit/wrong_ans/")
+                # file =  open('temp.cpp')
+                # myfile = File(file)
+                # sol = Solution(
+                #     user = request.user,
+                #     problem=problem,
+                #     language=request.POST['language'],
+                #     code_file=file,
+                #     verdict='WA'
+                # )
+                # sol.save()
+                # file.close()
+                return HttpResponseRedirect("/submit/wrong_ans/")
             # return HttpResponse('Yep! I got your code')
         else:
             return HttpResponse('No code file uploaded!!')

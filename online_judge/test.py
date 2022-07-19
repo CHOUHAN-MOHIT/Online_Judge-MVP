@@ -1,4 +1,8 @@
-import filecmp
+import subprocess
 
-result = filecmp.cmp('output.txt', 'media/test_outputs/output.txt', shallow=False)
-print(result)
+expout = open('exp_out.txt' , 'r')
+inputfile = open('input.txt' , 'r')
+generated_output = open('output.txt' , 'w')
+
+subprocess.run(['g++' , 'temp.cpp' , '-o' , 'temp'])
+subprocess.call(['temp.exe'],stdin=inputfile ,stdout=generated_output,shell=True)

@@ -11,8 +11,8 @@ class Problem(models.Model):
     ('medium' , 'medium'),
     ('easy' , 'easy'),
     )
-    problem_name = models.CharField(max_length=50)
-    problem_desc = models.TextField()
+    problem_name = models.CharField(max_length=63)
+    problem_desc = models.CharField(max_length=255)
     problem_difficulty = models.CharField(max_length=10, choices=Difficulty_choices)
 
     def __str__(self):
@@ -20,8 +20,8 @@ class Problem(models.Model):
 
 class Test(models.Model):
     problem = models.ForeignKey(Problem , on_delete=models.CASCADE)
-    test_input = models.FileField( upload_to='test_inputs/',null=False)
-    test_output = models.FileField( upload_to='test_outputs/',null=False)
+    test_input = models.CharField(max_length=255)
+    test_output = models.CharField(max_length=255)
 
 
 
@@ -37,6 +37,6 @@ class Solution(models.Model):
     user = models.ForeignKey(User ,on_delete=models.CASCADE)
     problem = models.ForeignKey(Problem , on_delete=models.CASCADE)
     language = models.CharField(max_length=10 , choices=Language_choices)
-    code_file = models.FileField(upload_to='code_file/' , null=False)
+    code_file = models.CharField(max_length=255)
     verdict = models.CharField(max_length=5 , choices=Verdict_choices)
     timestamp = models.TimeField(auto_now_add=True)
