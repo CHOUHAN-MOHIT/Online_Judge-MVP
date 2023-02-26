@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 {{problem.problem_name | capfirst}}- Submit | OJ
@@ -13,12 +14,153 @@
         color: rgb(255, 255, 255);
         background: rgb(58, 150, 255);
     }
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        background: #ffffff;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        height: 2px;
+        background-color: rgb(30, 30, 30);
+    }
+    
+    
+    {% comment %} ace editor {% endcomment %}
+    /* Variables */
+
+        /* Reset Styles */
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        .editor {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .editor__wrapper {
+            width: 100%;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor__body {
+            flex: 1;
+        }
+
+        .editor__footer {
+            display: flex;
+        }
+
+        .editor__footer--left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor__footer--right {
+            flex: 1;
+            margin-left: 10px;
+            overflow: hidden;
+        }
+
+        .editor__btn {
+            border: 0;
+            padding: .5em;
+            background-color: #fff;
+            border: 2px solid #333;
+            margin-top: 1em;
+            width: 100px;
+            cursor: pointer;
+        }
+
+        .editor__console {
+            background-color: #fff;
+            width: 100%;
+            height: 130px;
+            margin-top: .9em;
+            overflow: auto;
+        }
+
+        .editor__code {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border: 1px solid var(--editor-border);
+        }
+      
 </style>
 {% endblock css %}
 
 {% block body %}
 {% include 'navbar.html' %}
-<div class="container-fluid mt-1">
+<div class="flex flex-row w-auto bg-neutral-800 text-white">
+    <div class="description basis-1/2 h-screen overflow-y-auto px-4">
+        <div class="text-lg mt-16 font-bold">{{ problem.problem_name|title }}</div>
+        <div class="my-2">Easy</div>
+        <div class="leading-loose my-8">{{problem.problem_desc}}<br> Ipsum sint
+            cupiditate eveniet nam non esse delectus maxime perferendis dolorum eum blanditiis, quaerat rem, est
+            quo. Eveniet a nesciunt, quibusdam illo aperiam modi commodi fugiat.<br> Hic reprehenderitbr error
+            commodi
+            nulla libero, illo cum ea corrupti tempore veritatis corporis distinctio dolore esse dolores!</div>
+
+        <div class="my-8">
+            <div class="text-lg">Example 1:</div>
+            <div class="container bg-neutral-700 rounded-md p-4">
+                <div><span>Input : </span>nums = [2,7,11,15], target = 9</div>
+                <div><span>Output : </span>[0,1]</div>
+                <div><span>Explanation : </span>Because nums[0] + nums[1] == 9, we return [0, 1].</div>
+            </div>
+        </div>
+        <div class="my-8">
+            <div class="text-lg">Example 2:</div>
+            <div class="container bg-neutral-700 rounded-md p-4">
+                <div><span>Input : </span>nums = [2,7,11,15], target = 9</div>
+                <div><span>Output : </span>[0,1]</div>
+                <div><span>Explanation : </span>Because nums[0] + nums[1] == 9, we return [0, 1].</div>
+            </div>
+        </div>
+        <div class="my-8">
+            <div class="text-lg">Example 3:</div>
+            <div class="container bg-neutral-700 rounded-md p-4">
+                <div><span>Input : </span>nums = [2,7,11,15], target = 9</div>
+                <div><span>Output : </span>[0,1]</div>
+                <div><span>Explanation : </span>Because nums[0] + nums[1] == 9, we return [0, 1].</div>
+            </div>
+        </div>
+    </div>
+    <div class="editor description basis-1/2 h-screen overflow-y-auto">
+        <div class="editor__wrapper">
+            <div class="editor__body">
+                <div id="editorCode" class="editor__code  text-lg"></div>
+            </div>
+            <div class="flex flex-row justify-between p-2">
+                <div class="p-2"><input type="file"></div>
+                <div class="rounded bg-green-500 px-8 py-2 font-bold order-last">Submit</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% comment %} <div class="container-fluid mt-1">
     <div class="container-fluid row">
         <div class="container col-12 col-md-6">
             <h3 class="text-center text-capitalize mt-3">
@@ -42,26 +184,32 @@
                         </select>
                     </div>
                     <div class="form-group mb-4">
-                    <label for="textaera" class="form-label">Write your code here:</label>
-                    <textarea name="codeEditor" class="form-control bg-dark text-light" id="textaera"
-                        data-toggle="tooltip" data-placement="top" title="Write your code" rows="18"></textarea>
+                        <label for="textaera" class="form-label">Write your code here:</label>
+                        <textarea name="codeEditor" class="form-control bg-dark text-light" id="textaera"
+                            data-toggle="tooltip" data-placement="top" title="Write your code" rows="18"></textarea>
                     </div>
                     <div class="form-group mb-2">
-                    <label for="language" class="form-label mt-1">Code file:</label>
-                    <input type="file" class="form-control d-inline-block" name="codeFile" style="max-width: 300px;">
-                    <input type="submit" class="btn btn-primary mx-md-4" name="submit" value="Submit">
+                        <label for="language" class="form-label mt-1">Code file:</label>
+                        <input type="file" class="form-control d-inline-block" name="codeFile"
+                            style="max-width: 300px;">
+                        <input type="submit" class="btn btn-primary mx-md-4" name="submit" value="Submit">
                     </div>
                     {% if messages %}
                     {% for message in messages %}
                     <div class="alert alert-danger" role="alert">
                         {{message}}
-                      </div>
-                      {% endfor %}
+                    </div>
+                    {% endfor %}
                     {% endif %}
-                    
+
                 </fieldset>
             </form>
         </div>
     </div>
-</div>
+</div>{% endcomment %}
 {% endblock body %}
+{% block script %}
+<script src="{% static 'js/src-min/ace.js' %}"></script>
+<script src="{% static 'js/src-min/mode-javascript.js' %}"></script>
+<script src="{% static 'js/editor.js' %}"></script>
+{% endblock script %}

@@ -7,7 +7,7 @@ Problems | OJ
 {% block body %}
 {% include 'navbar.html' %}
 {% if request.user.is_authenticated %}
-<div class="container p-4">
+<div class="container p-5">
   <h1 class="text-center">Problems</h1>
   <ol class="list-group list-group-numbered">
     {% if problems %}
@@ -41,23 +41,5 @@ Problems | OJ
   </div>
   {% endif %}
 </div>
-{% else %}
-<div class="container">
-  <div class="card text-center">
-    <div class="card-header">
-      Attention !!!
-    </div>
-    <div class="card-body">
-      <h5 class="card-title">Special title treatment</h5>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
-    </div>
-    <div class="card-footer text-muted">
-      2 days ago
-    </div>
-  </div>
-</div>
 {% endif %}
-
-<h2>{{request.user.username}}</h2>
 {% endblock body %}
