@@ -171,7 +171,7 @@
 submitBtn.addEventListener('click', () => {
     var code = codeEditor.getValue(); // Get the code from the Ace editor
     console.log(code)
-    var url = "/submit/"+{{problemId}}+"/"; // Replace with your API endpoint URL
+    var url = "/contest/submit/"+{{problemId}}+"/"; // Replace with your API endpoint URL
     const csrftoken = Cookies.get('csrftoken');
 
     $.ajax({

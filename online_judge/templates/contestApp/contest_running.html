@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<script>
+    
+</script>
+{% endblock css %}
+
+
+{% block body %}
+
+<div class="text-8xl font-bold m-4 text-white">Running</div>
+
+<div class="text-4xl m-4 text-white">{{contest.name}}</div>
+<div class="text-4xl m-4 text-white">{{contest.start_time}}</div>
+<div class="text-4xl m-4 text-white">{{contest.end_time}}</div>
+<div class="text-4xl m-4 text-white">{{contest.description}}</div>
+
+<div class="relative overflow-x-auto  w-1/2">
+    <div class="text-4xl m-4 text-center text-white">Problems</div>
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs uppercase text-gray-400 bg-black" style="border-bottom:2px solid white">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Problem name
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Difficulty
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    status
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Accuracy
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for problem in problems %}
+            <tr class="{% if forloop.counter|divisibleby:2 %}bg-transparent{% else %}bg-[#2A2A2A]{% endif %}">
+                <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <a href={% url 'judge:problem' problem.id %}> 
+                        {{problem.problem_name|title}}
+                      </a>
+                </th>
+                <td class="px-6 py-2">
+                    {{problem.problem_difficulty|title}}
+                </td>
+                <td class="px-6 py-2">
+                    Unsolved
+                </td>
+                <td class="px-6 py-2">
+                    100%
+                </td>
+            </tr>            
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+    
+{% endblock body %}

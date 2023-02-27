@@ -40,3 +40,6 @@ class Solution(models.Model):
     code_file = models.CharField(max_length=255)
     verdict = models.CharField(max_length=5 , choices=Verdict_choices)
     timestamp = models.TimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username + " submitted " + self.problem.problem_name
