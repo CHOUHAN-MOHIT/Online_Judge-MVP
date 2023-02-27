@@ -6,3 +6,10 @@ env
 __pycache__
 db.sqlite3
 media
+
+
+
+exp_out.txt
+output.txt
+*.exe
+*.cpp

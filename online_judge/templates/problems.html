@@ -7,39 +7,49 @@ Problems | OJ
 {% block body %}
 {% include 'navbar.html' %}
 {% if request.user.is_authenticated %}
-<div class="container p-5">
-  <h1 class="text-center">Problems</h1>
-  <ol class="list-group list-group-numbered">
-    {% if problems %}
-    <div class="d-flex justify-content-between list-group-item">
-      <div class="fw-bold">Problem name</div>
-      <span class="fw-bold">Difficulty</span>
-    </div>
-
-    {% for problem in problems %}
-    <li class="list-group-item list-group-item-action d-flex justify-content-around align-items-start">
-      <div class="ms-2 me-auto">
-        <a href="{% url 'judge:problem' problem.id %}" class=" fw-bolder text-decoration-none text-capitalize p-3">
-          {{problem.problem_name}}
-        </a>
-      </div>
-      {% if problem.problem_difficulty == 'easy' %}
-      <span class="badge rounded-pill bg-success">Easy</span>
-      {% endif %}
-      {% if problem.problem_difficulty == 'medium' %}
-      <span class="badge rounded-pill bg-warning">Medium</span>
-      {% endif %}
-      {% if problem.problem_difficulty == 'difficult' %}
-      <span class="badge rounded-pill bg-danger">Difficult</span>
-      {% endif %}
-      {% endfor %}
-    </li>
-  </ol>
-  {% else %}
-  <div class="alert alert-danger" role="alert">
-    Sorry , there are no Problems available.
+<div class="flex flex-row pt-12 h-screen" style="background-color:#1A1A1A">
+<div class="basis-1/2">
+  <h1 class="text-center text-2xl font-bold p-2 text-white">Problems</h1>
+  <div class="relative overflow-x-auto">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs uppercase text-gray-400 bg-black" style="border-bottom:2px solid white">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Problem name
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Difficulty
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    status
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Accuracy
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for problem in problems %}
+            <tr class="{% if forloop.counter|divisibleby:2 %}bg-transparent{% else %}bg-[#2A2A2A]{% endif %}">
+                <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <a href={% url 'judge:problem' problem.id %}> 
+                        {{problem.problem_name|title}}
+                      </a>
+                </th>
+                <td class="px-6 py-2">
+                    {{problem.problem_difficulty|title}}
+                </td>
+                <td class="px-6 py-2">
+                    Unsolved
+                </td>
+                <td class="px-6 py-2">
+                    100%
+                </td>
+            </tr>            
+            {% endfor %}
+        </tbody>
+    </table>
   </div>
-  {% endif %}
 </div>
 {% endif %}
 {% endblock body %}

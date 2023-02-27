@@ -1,5 +1,5 @@
 from time import sleep
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect , JsonResponse
 from django.contrib.auth import authenticate , login , logout
 from django.shortcuts import get_object_or_404, render
 from judge.models import Problem, Solution, Test
@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.files import File
 from . import helper
+import json
 import subprocess
 
 # Create your views here.
@@ -14,17 +15,14 @@ def index(request):
     return render(request , 'index.html')
 
 def problems(request):
-    if request.user.is_authenticated :
-        problems = Problem.objects.all()
-        return render(request , 'problems.html' , { 'problems' : problems})
-    else:
-        messages.success(request , "Please login to solve problems!!", extra_tags='alert alert-info')
-        return HttpResponseRedirect('/login')
+    problems = Problem.objects.all()
+    return render(request , 'problems.html' , { 'problems' : problems})
 
 def problem(request , problem_id):
     if request.user.is_authenticated :
         problem = get_object_or_404(Problem , pk=problem_id)
         context = {
+            'problemId':problem_id,
             'problem':problem
         }
         return render(request, 'problem.html', context)
@@ -34,105 +32,32 @@ def problem(request , problem_id):
     
 
 def submit(request , pid):
-    # fetch problem object using pid and then test with problem_name
     problem = Problem.objects.get(pk=pid)
     test = Test.objects.get(problem__problem_name=problem.problem_name)
-    # checking method
     if request.method == 'POST':
-        # fetching file and code submitted by user
-        user_codefile = request.FILES.get('codeFile', False)
-        codeInEditor = request.POST.get('codeEditor', False)
-        # if user has submitted code through a file
-        if user_codefile:
-            # copy the content of codefile to temp.cpp
-            codefile_content = user_codefile.read()
-            with open('temp.cpp' , 'wb+') as temp_code:
-                temp_code.write(codefile_content)
-            temp_code.close()
-            # open some useful files and write the desired content
-            expout = open('exp_out.txt' , 'w')
-            output = open('output.txt' , 'w')
-            expout.write(test.test_output)
-            input = bytes(test.test_input , 'utf-8')
-            # get verdict
-            verdict = helper.evalueate(input, output)
-            input.close()
-            expout.close()
-            # check for verdict
-            if verdict:
-                file =  open('temp.cpp')
-                file = File(file)
-                sol = Solution(
-                    user = request.user,
-                    problem=problem,
-                    language=request.POST['language'],
-                    code_file=file,
-                    verdict='AC'
-                )
-                sol.save()
-                file.close()
-                return HttpResponseRedirect("/submit/correct_ans/")
-            else:
-                file =  open('temp.cpp')
-                file = File(file)
-                sol = Solution(
-                    user = request.user,
-                    problem=problem,
-                    language=request.POST['language'],
-                    code_file=file,
-                    verdict='WA'
-                )
-                sol.save()
-                file.close()
-                return HttpResponseRedirect("/submit/wrong_ans/")
-        # if user submitted the code using code editor 
-        elif codeInEditor:
-            # copy the code to temp.cpp
-            byte_content = codeInEditor.encode()
-            with open('temp.cpp' , 'wb+') as temp_code:
-                temp_code.write(byte_content)
-            temp_code.close()
-            # open some useful files and write desired content
-            expout = open('exp_out.txt' , 'w')
-            output = open('output.txt' , 'w')
-            expout.write(test.test_output)
-            # get verdict
-            input = bytes(test.test_input , 'utf-8')
-            verdict = helper.runcode(input, output)
-            expout.close()
-            verdict = helper.get_verdict()
+        # Get the data from the POST request
+        data = json.loads(request.body)
+        usercode = data['code']
 
-            if verdict == 'AC':
-                # file =  open('temp.cpp')
-                # myfile = File(file)
-                # sol = Solution(
-                #     user = request.user,
-                #     problem=problem,
-                #     language=request.POST['language'],
-                #     code_file=file,
-                #     verdict='AC'
-                # )
-                # sol.save()
-                # file.close()
-                return HttpResponseRedirect("/submit/correct_ans/")
-            else:
-                # file =  open('temp.cpp')
-                # myfile = File(file)
-                # sol = Solution(
-                #     user = request.user,
-                #     problem=problem,
-                #     language=request.POST['language'],
-                #     code_file=file,
-                #     verdict='WA'
-                # )
-                # sol.save()
-                # file.close()
-                return HttpResponseRedirect("/submit/wrong_ans/")
-            # return HttpResponse('Yep! I got your code')
-        else:
-            return HttpResponse('No code file uploaded!!')
-    else:
-        return HttpResponse('Usage: Post method is not used.')
+        # Process the data
+        byte_content = usercode.encode()
+        with open('temp.cpp' , 'wb+') as temp_code:
+            temp_code.write(byte_content)
+        temp_code.close()
+        expout = open('exp_out.txt' , 'w')
+        output = open('output.txt' , 'w')
+        expout.write(test.test_output)
+        input = bytes(test.test_input , 'utf-8')
+        verdict = helper.runcode(input, output)
+        expout.close()
+        verdict = helper.get_verdict()
+
+
+        # Send the result back to the client
+        response_data = {'result': verdict}
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+    
 
 
 

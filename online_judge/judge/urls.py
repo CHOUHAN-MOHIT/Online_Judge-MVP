@@ -3,8 +3,8 @@ from . import views
 
 app_name = 'judge'
 urlpatterns = [
-    # path('', views.index , name="index"),
-    path('' , views.problems , name="problems"),
+    path('', views.index , name="index"),
+    path('problems/' , views.problems , name="problems"),
     path('problem/<int:problem_id>/' , views.problem , name="problem"),
     path('submit/<int:pid>/' , views.submit , name="submit"),
     path('submit/<str:status>/' , views.result , name="result"),
