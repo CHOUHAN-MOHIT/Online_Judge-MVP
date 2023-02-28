@@ -9,54 +9,117 @@
 
 
 {% block body %}
+{% include 'navbar.html' %}
 
-<div class="text-8xl font-bold m-4 text-white">Running</div>
+<div class="flex flex-col w-1/2 mx-auto">
+    <div class="h-screen text-white">
+        <div class="h-72 bg-green-200 text-center text-4xl text-gray-100 font-bold flex flex-col justify-center mt-12 relative"
+            style="align-items: center; background-image: linear-gradient(transparent, #00126173),url(/static/images/cover3.jpg); background-size: cover; background-position: top;">
+            {{contest.name| title}}
+            <div class="absolute top-44 overflow-hidden m-8 rounded-t-lg z-20" >
+                <table class="w-full text-sm text-center text-black rounded-t-lg">
+                    <thead class="uppercase text-white bg-black rounded-t-lg" style="border-bottom:2px solid white">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Problem name
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Difficulty
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                status
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Accuracy
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- {% for problem in problems %} -->
+                        <tr
+                            class="{% if forloop.counter|divisibleby:2 %}bg-[#2A2A2Adf]{% else %}bg-[#2A2A2Aaf]{% endif %} text-gray-200 font-semibold">
+                            <th scope="row" class="px-6 py-2 whitespace-nowrap text-left">
+                                <a href="#">
+                                    {{problem.problem_name|title}}
+                                </a>
+                            </th>
+                            <td class="py-px {% if problem.problem_difficulty == 'easy' %}text-lime-500 {% elif problem.problem_difficulty == 'medium' %}text-yellow-600 {% else %}text-red-700 {% endif %} ">
+                                {{problem.problem_difficulty|title}}
+                            </td>
+                            <td class="px-6 py-2">
+                                Unsolved
+                            </td>
+                            <td class="px-6 py-2">
+                                100%
+                            </td>
+                        </tr>
+                        <!-- {% endfor %} -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="relative px-4 z-10 -mt-16 pb-8" style="background-image:linear-gradient(#0b2660 , #05081d , #040614);">
+            <div class="pt-40 text-lg font-semibold">Contest Details:</div>
+            <div>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ex corporis corrupti quia quam
+                distinctio, labore dolorem, vero assumenda, exercitationem ipsum eum totam architecto quidem 
+            </div>
+            <div class="text-lg font-semibold">Contest Rules:</div>
+            <div>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ex corporis corrupti quia quam
+                distinctio, labore dolorem, vero assumenda, exercitationem ipsum eum totam architecto quidem saepe
+                nam. Eum suscipit aliquam iste minima ducimus accusamus minus sint at molestias reprehenderit?
+            </div>
 
-<div class="text-4xl m-4 text-white">{{contest.name}}</div>
-<div class="text-4xl m-4 text-white">{{contest.start_time}}</div>
-<div class="text-4xl m-4 text-white">{{contest.end_time}}</div>
-<div class="text-4xl m-4 text-white">{{contest.description}}</div>
-
-<div class="relative overflow-x-auto  w-1/2">
-    <div class="text-4xl m-4 text-center text-white">Problems</div>
-    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead class="text-xs uppercase text-gray-400 bg-black" style="border-bottom:2px solid white">
-            <tr>
-                <th scope="col" class="px-6 py-3">
-                    Problem name
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Difficulty
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    status
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Accuracy
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for problem in problems %}
-            <tr class="{% if forloop.counter|divisibleby:2 %}bg-transparent{% else %}bg-[#2A2A2A]{% endif %}">
-                <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    <a href={% url 'judge:problem' problem.id %}> 
-                        {{problem.problem_name|title}}
-                      </a>
-                </th>
-                <td class="px-6 py-2">
-                    {{problem.problem_difficulty|title}}
-                </td>
-                <td class="px-6 py-2">
-                    Unsolved
-                </td>
-                <td class="px-6 py-2">
-                    100%
-                </td>
-            </tr>            
-            {% endfor %}
-        </tbody>
-    </table>
-  </div>
+            <div class="text-lg font-semibold">Prize</div>
+            <div class="overflow-x-auto my-4 mx-36">
+                <table class="w-full text-center text-center text-white">
+                    <thead class="uppercase bg-black" style="border-bottom:2px solid white">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Rank
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Prize
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-gray-700">
+                            <th scope="row" class="px-6 py-2 font-medium whitespace-nowrap">
+                                <div class="w-8 h-8 inline-block" style="background-image: url(/static/images/badge-1.png); background-size: cover;
+    background-position:center; vertical-align: middle;"></div>
+                                <span>1</span>
+                            </th>
+                            <td class="px-6 py-2">
+                                1000₹
+                            </td>
+                        </tr>
+                        <tr class="bg-gray-900">
+                            <th scope="row" class="px-6 py-2 font-medium whitespace-nowrap">
+                                <div class="w-8 h-8 inline-block" style="background-image: url(/static/images/badge-2.png);
+    background-size: cover;
+    background-position:center; vertical-align: middle;"></div>
+                                <span >2</span>
+                            </th>
+                            <td class="px-6 py-2">
+                                750₹
+                            </td>
+                        </tr>
+                        <tr class="bg-gray-700">
+                            <th scope="row" class="px-6 py-2 font-medium whitespace-nowrap">
+                                <div class="w-8 h-8 inline-block" style="background-image: url(/static/images/badge-3.png);
+    background-size: cover;
+    background-position:center; vertical-align: middle;"></div>
+                                <span>3</span>
+                            </th>
+                            <td class="px-6 py-2">
+                                500₹
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
     
 {% endblock body %}
