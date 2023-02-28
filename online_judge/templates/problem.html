@@ -155,6 +155,15 @@
                 <div class="p-2"><input type="file"></div>
                 <button type="button" class="rounded bg-green-500 px-8 py-2 font-bold order-last" id="submit">Submit</button>
             </div>
+
+            <div class="flex flex-row justify-between bg-green-200 text-green-900 p-2 m-2 rounded hover:font-bold hidden" id="success" >
+                <div class="">Correct Submission </div>
+                <button class="close font-semibold mx-4 hover:font-bold" onclick="myFunction()">X</button>
+            </div>
+            <div class="flex flex-row justify-between bg-red-300 text-red-900 p-2 m-2 rounded hover:font-bold hidden" id="failure" >
+                <div class="">Wrong Submission </div>
+                <button class="close font-semibold mx-4 hover:font-bold" onclick="myFunction()">X</button>
+            </div>
         </div>
     </div>
 
@@ -167,8 +176,15 @@
 <script src="{% static 'js/editor.js' %}"></script>
 
 <script>
+
+    function myFunction() {
+        document.getElementById("failure").style.display = "none";
+        document.getElementById("success").style.display = "none";
+    }
+
+
     const submitBtn = document.getElementById("submit");
-submitBtn.addEventListener('click', () => {
+    submitBtn.addEventListener('click', () => {
     var code = codeEditor.getValue(); // Get the code from the Ace editor
     console.log(code)
     var url = "/contest/submit/"+{{problemId}}+"/"; // Replace with your API endpoint URL
@@ -185,9 +201,9 @@ submitBtn.addEventListener('click', () => {
         },
         success: function (response) {
             if(response.result == "AC")
-            window.location.href = "/submit/correct_ans/";
+            document.getElementById("success").style.display="flex";
             else if(response.result == "WA")
-            window.location.href = "/submit/wrong_ans/";
+            document.getElementById("failure").style.display="flex";
         },
         error: function (error) {
             console.log(error);

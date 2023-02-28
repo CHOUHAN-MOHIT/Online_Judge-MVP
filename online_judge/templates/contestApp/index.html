@@ -6,7 +6,8 @@
 <div class="m-16"></div>
 {% for contest in contests %}
 <div class="flex flex-row justify-around text-white text-2xl font-bold m-4">
-        <div class="">{{contest.name}} </div>
+        <div class=""><a href="{% url 'contestApp:contest' contest.id %}">
+            {{contest.name}} </a></div>
         <div class="">{{contest.description}} </div>
         <div class="">{{contest.start_time}} </div>
         <div class="">{{contest.end_time}} </div>

@@ -18,5 +18,4 @@ class ContestProblem(Problem):
 
 class Scorecard(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    contest = models.ForeignKey(Contest,on_delete=models.CASCADE)
     score = models.IntegerField(default=0)

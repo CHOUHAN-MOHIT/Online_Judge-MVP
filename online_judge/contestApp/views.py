@@ -1,6 +1,6 @@
 from django.shortcuts import render , HttpResponse
 from datetime import datetime
-from .models import Contest , ContestProblem
+from .models import Contest , ContestProblem , Scorecard
 import pytz
 import json 
 from django.core.files import File
@@ -62,6 +62,14 @@ def contestSubmission(request , problemid):
         expout.close()
         verdict = helper.get_verdict()
 
+        if verdict == 'AC':
+            prevSol = Solution.objects.filter(user = request.user , problem = problem , verdict = 'AC')
+            print(prevSol)
+            if prevSol.exists():
+                print("point awarded!!")
+            else:
+                updatescore(request.user, problem)
+
         sol = Solution(
             user = request.user,
             problem=problem,
@@ -77,3 +85,19 @@ def contestSubmission(request , problemid):
         # Send the result back to the client
         response_data = {'result': verdict}
         return HttpResponse(json.dumps(response_data), content_type='application/json')
+    
+def updatescore(user, problem):
+    obj = Scorecard.objects.filter(user = user)
+
+    if obj.exists():
+        toUpdate = Scorecard.objects.get(user = user)
+        toUpdate.score = toUpdate.score+problem.points
+        toUpdate.save()
+        print("final score:" , toUpdate.score , " + " , problem.points)
+    else:
+        scorecard = Scorecard(  
+            user = user,
+            score = problem.points
+        )
+        scorecard.save()
+        print("initial score:" , scorecard.score)

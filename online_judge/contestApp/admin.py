@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.forms import inlineformset_factory
 
-from .models import Contest , ContestProblem
+from .models import Contest , ContestProblem , Scorecard
 
 
 class ProblemInline(admin.TabularInline):
@@ -11,3 +11,5 @@ class ProblemInline(admin.TabularInline):
 @admin.register(Contest)
 class ContestAdmin(admin.ModelAdmin):
     inlines = [ProblemInline]
+
+admin.site.register(Scorecard)
