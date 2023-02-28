@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+{% include 'navbar.html' %}
+<div class="flex w-screen justify-center opacity-50 ">
+    <img src="{% static 'images/trophy-removebg-preview.png' %}" alt="" >
+</div>
+<div class="relative overflow-x-auto mx-64 -mt-32">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs uppercase text-gray-400 bg-black" style="border-bottom:2px solid white">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Rank
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    User
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Points
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Accuracy
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coder in leaderboard_list %} 
+            <tr class="{% if forloop.counter|divisibleby:2 %}bg-transparent{% else %}bg-[#2A2A2A]{% endif %}">
+                <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {{forloop.counter}}
+                </th>
+                <td class="px-6 py-2">
+                    {{coder.user|title}}
+                </td>
+                <td class="px-6 py-2">
+                    {{coder.score|title}}
+                </td>
+                <td class="px-6 py-2">
+                    100%
+                </td>
+            </tr>            
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+{% endblock body %}

@@ -101,3 +101,12 @@ def updatescore(user, problem):
         )
         scorecard.save()
         print("initial score:" , scorecard.score)
+
+def leaderboard(request):
+    leaderboard_list = Scorecard.objects.all().order_by("-score")
+    print(leaderboard_list)
+
+    context = {
+        'leaderboard_list':leaderboard_list
+    }
+    return render(request , 'contestApp/leaderboard.html' , context)
