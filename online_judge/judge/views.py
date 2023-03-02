@@ -116,5 +116,5 @@ def login_check(request):
 
 def log_out(request):
     logout(request)
-    messages.success(request , "Logout succesfully.", extra_tags='alert alert-success')
+    messages.success(request , "Logout succesfully.", extra_tags='bg-red-400')
     return HttpResponseRedirect('/')
