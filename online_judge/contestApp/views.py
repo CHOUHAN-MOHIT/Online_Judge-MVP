@@ -22,21 +22,27 @@ def contest(request , contestId):
     now = datetime.utcnow()
     now = pytz.UTC.localize(now)
 
+    status = ''
+
     if now < contest.start_time:
         # Contest has not started yet
-        return render(request, 'contestApp/contest_wait.html')
+        status = 'not started'
+        # return render(request, 'contestApp/contest_wait.html')
     elif now > contest.end_time:
         # Contest has ended
-        return render(request, 'contestApp/contest_ended.html')
+        status = 'ended'
+        # return render(request, 'contestApp/contest_ended.html')
     else:
         # Contest is currently running
-        contest = Contest.objects.get(id=contestId)
-        problems = ContestProblem.objects.filter(contest=contest)
-        context = {
-            'contest':contest,
-            'problems':problems
-        }
-        return render(request, 'contestApp/contest_running.html', context)
+        status = 'running'
+    contest = Contest.objects.get(id=contestId)
+    problems = ContestProblem.objects.filter(contest=contest)
+    context = {
+        'status':status,
+        'contest':contest,
+        'problems':problems
+    }
+    return render(request, 'contestApp/contest_running.html', context)
     
 def contestSubmission(request , problemid):
     problem = ContestProblem.objects.get(pk=problemid)
