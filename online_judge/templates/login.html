@@ -6,67 +6,60 @@ Login | OJ
 
 {% block body %}
 {% include 'navbar.html' %}
+{% if messages %}
+{% for message in messages %}
+<div class="text-lg bg-green-300 text-green-900 absolute bottom-0 m-4 px-8 rounded max-w-md min-h-[4rem] flex flex-row items-center" id="message" role="alert" >
+  <div class="text-center">
+  {{ message }}
+</div>
+<button class="close font-semibold p-2 ml-2 hover:font-bold" onclick="myFunction()">X</button>
+</div>
+{% endfor %}
+{% endif %}
 
-<section class="vh-100" style="background-color: rgba(255, 223, 149, 0.589);">
-    <div class="container py-0 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col col-xl-10">
-                
-            {% if messages %}
-            {% for message in messages %}
-            <div{% if message.tags %} class="{{ message.tags }} alert-dismissible fade show"
-                role="alert" {% endif %}>{{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                    aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            {% endif %}
-                <div class="card" style="border-radius: 1rem;">
-                    <div class="row g-0">
-                        <div class="col-md-6 col-lg-5 d-none align-content-center d-md-flex">
-                            <img src="https://img.freepik.com/free-vector/secure-login-sign-up-concept-illustration-user-use-secure-login-password-protection-website-social-media-account-vector-flat-style_7737-2270.jpg?size=626&ext=jpg&ga=GA1.2.1865860322.1656910696"
-                                alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
-                        </div>
-                        <div class="col-md-6 col-lg-7 d-flex align-items-center">
-                            <div class="card-body p-4 p-lg-5 text-black">
+<section class="h-screen bg-neutral-800 grid place-items-center">
+    <div class="w-3/5 h-3/5 p-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+    <div class="w-full h-full bg-neutral-700 flex flex-row rounded-lg hover:shadow-lg hover:shadow-blue-500/50">
+        <div class="basis-1/2 text-white text-center">
+            <div class="text-4xl font-semibold m-8">Welcome Back</div>
 
-                                <form action="{% url 'judge:login_check' %}" method="post">
-                                    {% csrf_token %}
-                                    <div class="d-flex align-items-center mb-4 pb-1">
-                                        <span class="h1 fw-bold mb-0">Log in</span>
-                                    </div>
-
-                                    <h5 class="fw-normal mb-4 pb-3" style="letter-spacing: 1px;">Sign into your account
-                                    </h5>
-
-                                    <div class="form-outline mb-4 d-flex flex-row align-items-center">
-                                        <i class="fas fa-at fa-lg me-3 fa-fw"></i>
-                                        <input type="text" name="username" id="form2Example17" class="form-control form-control-lg" placeholder="Username" required="required"/>
-                                    </div>
-
-                                    <div class="form-outline mb-4 d-flex flex-row align-items-center">
-                                        <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                                        <input type="password" id="form2Example27" name="password" 
-                                            class="form-control form-control-lg" placeholder="Password" required="required"/>
-                                    </div>
-                                    <div class="pt-1 mb-4 mx-4">
-                                        <button class="btn btn-primary btn-lg btn-block  mx-3" type="submit">Login</button>
-                                        <a class="small text-muted mx-3" href="#!">Forgot password?</a>
-                                    </div>
-
-                                    {% comment %} <a class="small text-muted" href="#!">Forgot password?</a> {% endcomment %}
-                                    <p class="mb-4 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="{% url 'judge:register' %}"
-                                            style="color: #2575ff;">Register here</a></p>
-                                    <a href="#!" class="small text-muted">Terms of use.</a>
-                                    <a href="#!" class="small text-muted">Privacy policy</a>
-                                </form>
-
-                            </div>
-                        </div>
+            <div class="w-full grid place-items-center my-8 ">
+                <form class="w-2/3" action="{% url 'judge:login_check' %}" method="post">
+                    {% csrf_token %}
+                    <div class="relative z-10 text-left">
+                        <input type="text" name="username" class="w-full p-1 text-white-900 bg-transparent border-0 border-b-2 border-gray-600 focus:border-blue-600 my-4 focus:outline-none z-20 relative peer" placeholder=" " required>
+                        <label for="" class="block w-full absolute top-0 text-xs text-blue-500 peer-placeholder-shown:text-center peer-focus:text-left peer-placeholder-shown:text-gray-400 peer-placeholder-shown:translate-y-6 peer-placeholder-shown:text-base peer-focus:text-xs peer-focus:translate-y-0 peer-focus:text-blue-500 trasition-all duration-300">
+                            Username</label>
                     </div>
-                </div>
+                    <div class="relative z-10 text-left">
+                        <input type="password" name="password" class="w-full p-1 text-white-900 bg-transparent border-0 border-b-2 border-gray-600 focus:border-blue-600 my-4 focus:outline-none z-20 relative peer" placeholder=" " required>
+                        <label for="" class="block w-full absolute top-0 text-xs text-blue-500 peer-placeholder-shown:text-center peer-focus:text-left peer-placeholder-shown:text-gray-400 peer-placeholder-shown:translate-y-6 peer-placeholder-shown:text-base peer-focus:text-xs peer-focus:translate-y-0 peer-focus:text-blue-500 trasition-all duration-300">
+                            Password</label>
+                    </div>
+                    <button type="submit"
+                        class="text-white bg-blue-600 rounded-md py-2 px-6 my-4 hover:bg-blue-700">Login</button>
+                </form>
             </div>
+
+            <hr class="w-1/2 p-px mx-auto my-4 bg-gray-500 border-0 rounded">
+
+            
+            <div class="text-sm">Get your account now! <a href="{% url 'judge:register' %}"
+                class="text-blue-500 hover:underline">Register</a></div>
+
+        </div>
+        <div class="basis-1/2 rounded-r-lg bg-center bg-cover" style="background-image: url(/static/images/login.png);">
         </div>
     </div>
+    </div>
 </section>
+
+{% block script %}
+<script>
+    function myFunction() {
+      document.getElementById("message").style.display = "none";
+    }
+</script>
+{% endblock script %}
+
 {% endblock body %}
