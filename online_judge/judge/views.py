@@ -82,16 +82,22 @@ def register_verify(request):
         if request.POST['password1'] == request.POST['password2']:
             username = request.POST['username']
             firstname = request.POST['firstname']
+            lastname = request.POST['lastname']
             password = request.POST['password1']
             email = request.POST['email']
 
+            if User.objects.filter(username=username):
+                messages.error(request , "Username Already exists." )
+                return HttpResponseRedirect('/register/')
+
             new_user = User.objects.create_user(username , email, password)
             new_user.first_name = firstname
+            new_user.last_name = lastname
             new_user.save()
-            messages.success(request , "Registration Successful", extra_tags='alert alert-success')
+            messages.success(request , "Registration Successful")
             return HttpResponseRedirect('/register/')
         else:
-            messages.succes(request , "Both passsword should be same.", extra_tags='alert alert-danger')
+            messages.error(request , "Both passsword should be same." )
             return HttpResponseRedirect('/register/')
     else:
         return HttpResponse("Usage: Post method is not used.")
@@ -116,5 +122,5 @@ def login_check(request):
 
 def log_out(request):
     logout(request)
-    messages.success(request , "Logout succesfully.", extra_tags='bg-red-400')
+    messages.success(request , "Logged out succesfully.", extra_tags='bg-red-400')
     return HttpResponseRedirect('/')

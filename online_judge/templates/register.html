@@ -6,94 +6,104 @@ Register | OJ
 
 {% block body %}
 {% include 'navbar.html' %}
+{% if messages %}
+{% for message in messages %}
+<div class="text-lg bg-green-300 text-green-900 absolute bottom-0 m-4 px-8 rounded max-w-md min-h-[4rem] flex flex-row items-center" id="message" role="alert" >
+  <div class="text-center">
+  {{ message }}
+</div>
+<button class="close font-semibold p-2 ml-2 hover:font-bold" onclick="myFunction()">X</button>
+</div>
+{% endfor %}
+{% endif %}
+ 
+<section class="h-screen bg-neutral-800 grid place-items-center">
+	<div class="w-4/5 h-4/5 p-0.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-lg">
+		<div class="w-full h-full bg-neutral-700 flex flex-row rounded-lg invi sible">
+			<div class="basis-2/3 text-white text-center">
+				<div class="text-4xl font-semibold mt-4">Register</div>
 
-<section class="vh-100" style="background-color: rgba(255, 223, 149, 0.589);">
-	<div class="container h-100">
-		<div class="row d-flex justify-content-center align-items-center h-100">
-			<div class="col-lg-12 col-xl-11">
-				<div class="card text-black" style="border-radius: 25px;">
-					<div class="card-body p-md-4">
-						<div class="row justify-content-center">
-							<div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-
-								<p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4">Sign up</p>
-
-								<form class="mx-1 mx-md-4" action="{% url 'judge:register_verify' %}" method="post">
-									{% csrf_token %}
-									<div class="d-flex flex-row align-items-center mb-4">
-										<i class="fas fa-user fa-lg me-3 fa-fw"></i>
-										<div class="form-outline flex-fill mb-0">
-											<input type="text" id="form3Example1c" class="form-control" name="firstname"
-												placeholder="Firstname" required="required"/>
-										</div>
-									</div>
-									<div class="d-flex flex-row align-items-center mb-4">
-										<i class="fas fa-at fa-lg me-3 fa-fw"></i>
-										<div class="form-outline flex-fill mb-0">
-											<input type="text" id="form3Example1c" class="form-control" name="username"
-												placeholder="Username" required="required"/>
-										</div>
-									</div>
-
-									<div class="d-flex flex-row align-items-center mb-4">
-										<i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-										<div class="form-outline flex-fill mb-0">
-											<input type="email" id="form3Example3c" class="form-control" name="email"
-												placeholder="name@example.com" required="required"/>
-										</div>
-									</div>
-
-									<div class="d-flex flex-row align-items-center mb-4">
-										<i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-										<div class="form-outline flex-fill mb-0">
-											<input type="password" id="form3Example4c" class="form-control"
-												name="password1" placeholder="Password" required="required"/>
-										</div>
-									</div>
-							<div class="d-flex flex-row align-items-center mb-4">
-								<i class="fas fa-key fa-lg me-3 fa-fw"></i>
-								<div class="form-outline flex-fill mb-0">
-									<input type="password" id="form3Example4cd" class="form-control" name="password2"
-										placeholder="Re-enter Password" required="required"/>
-								</div>
+				<div class="w-full grid place-items-center my-4 ">
+					<form action="{% url 'judge:register_verify' %}" method="post">
+						{% csrf_token %}
+						<div class="grid grid-cols-2 gap-3">
+							<div class="relative z-10 text-left">
+								<input type="text"  name="firstname"
+									class="w-full p-1 text-white-900 bg-transparent border-0 border-b-2 border-gray-600 focus:border-blue-600 my-4 focus:outline-none z-20 relative peer"
+									placeholder=" " required>
+								<label for=""
+									class="block w-full  absolute top-0 text-xs text-blue-500  peer-focus:text-left peer-placeholder-shown:text-gray-400 peer-placeholder-shown:translate-y-6 peer-placeholder-shown:text-base peer-focus:text-xs peer-focus:translate-y-0 peer-focus:text-blue-500 trasition-all duration-300">
+								   First Name </label>
 							</div>
-
-							<div class="form-check d-flex mb-2">
-								<input class="form-check-input me-2" type="checkbox" value="yes" id="form2Example3c" required="required"/>
-								<label class="form-check-label" for="form2Example3">
-									I agree all statements in <a href="#!">Terms of service</a>
-								</label>
+							<div class="relative z-10 text-left">
+								<input type="text" name="lastname"
+									class="w-full p-1 text-white-900 bg-transparent border-0 border-b-2 border-gray-600 focus:border-blue-600 my-4 focus:outline-none z-20 relative peer"
+									placeholder=" " required>
+								<label for=""
+									class="block w-full  absolute top-0 text-xs text-blue-500  peer-focus:text-left peer-placeholder-shown:text-gray-400 peer-placeholder-shown:translate-y-6 peer-placeholder-shown:text-base peer-focus:text-xs peer-focus:translate-y-0 peer-focus:text-blue-500 trasition-all duration-300">
+									Last Name </label>
 							</div>
-
-							{% if messages %}
-									{% for message in messages %}
-									<div{% if message.tags %} class="{{ message.tags }} alert-dismissible fade show"
-										role="alert" {% endif %}>{{ message }}
-										<button type="button" class="btn-close" data-bs-dismiss="alert"
-											aria-label="Close"></button>
-									</div>
-									{% endfor %}
-									{% endif %}
-
-							<div class="d-flex justify-content-center mx-3 mb-2 mb-lg-4">
-								<button type="submit" class="btn btn-primary btn-lg">Register</button>
-							</div>
-
-							</form>
-
 						</div>
-						<div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-
-							<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-								class="img-fluid" alt="Image">
-
+						<div class="relative z-10 text-left">
+							<input type="text" name="username"
+								class="w-full p-1 text-white-900 bg-transparent border-0 border-b-2 border-gray-600 focus:border-blue-600 my-4 focus:outline-none z-20 relative peer"
+								placeholder=" " required>
+							<label for=""
+								class="block w-full absolute top-0 text-xs text-blue-500  peer-focus:text-left peer-placeholder-shown:text-gray-400 peer-placeholder-shown:translate-y-6 peer-placeholder-shown:text-base peer-focus:text-xs peer-focus:translate-y-0 peer-focus:text-blue-500 trasition-all duration-300">
+								Username</label>
 						</div>
-					</div>
+						<div class="relative z-10 text-left">
+							<input type="email" name="email"
+								class="w-full p-1 text-white-900 bg-transparent border-0 border-b-2 border-gray-600 focus:border-blue-600 my-4 focus:outline-none z-20 relative peer"
+								placeholder=" " required>
+							<label for=""
+								class="block w-full absolute top-0 text-xs text-blue-500  peer-focus:text-left peer-placeholder-shown:text-gray-400 peer-placeholder-shown:translate-y-6 peer-placeholder-shown:text-base peer-focus:text-xs peer-focus:translate-y-0 peer-focus:text-blue-500 trasition-all duration-300">
+								Email</label>
+						</div>
+						<div class="relative z-10 text-left">
+							<input type="password" name="password1"
+								class="w-full p-1 text-white-900 bg-transparent border-0 border-b-2 border-gray-600 focus:border-blue-600 my-4 focus:outline-none z-20 relative peer"
+								placeholder=" " required>
+							<label for=""
+								class="block w-full absolute top-0 text-xs text-blue-500  peer-focus:text-left peer-placeholder-shown:text-gray-400 peer-placeholder-shown:translate-y-6 peer-placeholder-shown:text-base peer-focus:text-xs peer-focus:translate-y-0 peer-focus:text-blue-500 trasition-all duration-300">
+								Password</label>
+						</div>
+						<div class="relative z-10 text-left">
+							<input type="password" name="password2"
+								class="w-full p-1 text-white-900 bg-transparent border-0 border-b-2 border-gray-600 focus:border-blue-600 my-4 focus:outline-none z-20 relative peer"
+								placeholder=" " required>
+							<label for=""
+								class="block w-full absolute top-0 text-xs text-blue-500  peer-focus:text-left peer-placeholder-shown:text-gray-400 peer-placeholder-shown:translate-y-6 peer-placeholder-shown:text-base peer-focus:text-xs peer-focus:translate-y-0 peer-focus:text-blue-500 trasition-all duration-300">
+								Confirm Password</label>
+						</div>
+
+						<div class="flex items-center my-2">
+							<input id="link-checkbox" type="checkbox" value=""
+								class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600">
+							<label for="link-checkbox"
+								class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the
+								<a href="#" class="text-blue-600 dark:text-blue-500 hover:underline">terms and
+									conditions</a>.</label>
+						</div>
+
+						<button type="submit"
+							class="text-white bg-blue-600 rounded-md py-2 px-6 my-4 hover:bg-blue-700">Register</button>
+					</form>
 				</div>
+
+			</div>
+			<div class="basis-1/2 rounded-r-lg bg-center bg-cover"
+				style="background-image: url(/static/images/register.jpg);">
 			</div>
 		</div>
 	</div>
-	</div>
 </section>
 
+{% block script %}
+<script>
+    function myFunction() {
+      document.getElementById("message").style.display = "none";
+    }
+</script>
+{% endblock script %}
 {% endblock body %}
