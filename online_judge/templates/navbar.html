@@ -3,35 +3,32 @@
   <div class="container flex flex-wrap items-center justify-between mx-auto">
     <a href="{% url 'judge:problems' %}" class="flex items-center">
         <img src="{% static 'images/oj-logo-1.png' %}" class="h-6 pr-3 sm:h-9" alt="Flowbite Logo" />
-        <span class="self-center text-xl font-semibold whitespace-nowrap text-white">Flowbite</span>
+        <span class="self-center text-xl font-semibold whitespace-nowrap text-white">ONLINE JUDGE</span>
     </a>
     <div class="flex items-center md:order-2">
       {% if request.user.is_authenticated %}
-      <a href="{% url 'judge:logout' %}" class="text-sm px-2 font-medium text-blue-500 hover:underline">Logout</a>
-      <button type="button" class="flex mx-2 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-600">
-        <img class="w-8 h-8 rounded-full" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" alt="user photo">
+      <button type="button" class="flex mx-2 text-sm bg-neutral-600 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-600">
+        <div  class="mx-2 text-base font-semibold text-white">Hi, {{user.first_name | title}} </div>
+        <img class="w-8 h-8 rounded-full border-2 border-blue-700" src="{% static 'images/user-1.png' %}" alt="user photo">
       </button>
-      <div  class="mx-2 text-lg font-semibold"> Mohit </div>
+      <a href="{% url 'judge:logout' %}" class="text-base px-2 font-medium text-blue-500 hover:underline">Logout</a>
       {% else %}
-      <a href="{% url 'judge:login' %}" class="text-sm px-2 font-medium text-blue-500 hover:underline">Login</a>{% endif %}
+      <a href="{% url 'judge:login' %}" class="text-base px-2 font-medium text-blue-500 hover:underline">Login</a>{% endif %}
         
     </div>
     <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="mobile-menu-2">
-      <ul class="flex flex-col  rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 bg-neutral-700">
+      <ul class="flex flex-col text-white bg-blue-700 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 bg-neutral-700">
         <li>
-          <a href="{% url 'judge:index' %}" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0">Home</a>
+          <a href="{% url 'judge:index' %}" class="block py-2 pl-3 pr-4  md:bg-transparent md:p-0 hover:text-blue-600" id="home">Home</a>
         </li>
         <li>
-          <a href="{% url 'judge:problems' %}" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 hover:text-vlue">Problems</a>
+          <a href="{% url 'judge:problems' %}" class="block py-2 pl-3 pr-4  md:bg-transparent md:p-0 hover:text-blue-600" id="problems">Problems</a>
         </li> 
         <li>
-          <a href="{% url 'contestApp:index' %}" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 hover:text-vlue">Contests</a>
+          <a href="{% url 'contestApp:index' %}" class="block py-2 pl-3 pr-4  md:bg-transparent md:p-0 hover:text-blue-600" id="contests">Contests</a>
         </li>
         <li>
-          <a href="#" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 hover:text-vlue">About Us</a>
-        </li>
-        <li>
-          <a href="#" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 hover:text-vlue">Contact</a>
+          <a href="#" class="block py-2 pl-3 pr-4  md:bg-transparent md:p-0 hover:text-blue-600" id="contact">Contact Us</a>
         </li>
       </ul>
     </div>
