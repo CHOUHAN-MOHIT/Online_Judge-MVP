@@ -4,16 +4,21 @@ Home | OJ
 {% endblock title %}
 {% block body %}
 {% include 'navbar.html' %}
-  <div class="h-96 pt-14 text-8xl text-center bg-neutral-800 text-white"> 
-    {% if messages %}
-    {% for message in messages %}
-    <div class="text-lg bg-green-300 text-green-900" role="alert" >
-    {{ message }} 
-    {% comment %} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">X</button> {% endcomment %}
-    </div>
-    {% endfor %}
-  {% endif %}
+{% if messages %}
+{% for message in messages %}
+<div class="text-lg bg-green-300 text-green-900 absolute bottom-0 m-4 px-8 rounded max-w-md min-h-[4rem] flex flex-row items-center" id="message" role="alert" >
+  <div class="text-center">
+  {{ message }}
+</div>
+<button class="close font-semibold p-2 ml-2 hover:font-bold" onclick="myFunction()">X</button>
+</div>
+{% endfor %}
+{% endif %}
+<div class="h-96 pt-14 text-8xl text-center bg-neutral-800 text-white"> 
     About US
-  </div>
+</div>
 {% include 'footer.html' %}
+<script>
+  document.getElementById('home').classList.add("text-blue-600", "border-0" ,"border-b-2" ,"border-blue-600");
+</script>
 {% endblock body %}
