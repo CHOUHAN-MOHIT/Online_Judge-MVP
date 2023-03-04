@@ -63,18 +63,23 @@ def contestSubmission(request , problemid):
         }
         response = requests.post('https://api.codex.jaagrav.in', data=data, headers= {'Content-Type': 'application/x-www-form-urlencoded'})
 
+        verdict = ""
+                            
         if response.status_code == 200:
             data = response.json()
-            print(data)
+            if data['error']:
+                verdict = 'CE'
         else:
-            print("Error: ", response.status_code)
-                    
-        verdict = ""
-        if data['output'] == test.test_output:
+            verdict = 'EX'
+
+        if verdict == 'CE' or verdict == 'EX':
+            response_data = {'result': verdict}
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+        elif data['output'] == test.test_output:
             verdict = 'AC'
         else:
             verdict = 'WA'
-        print(verdict)
+
         if verdict == 'AC':
             prevSol = Solution.objects.filter(user = request.user , problem = problem , verdict = 'AC')
             print(prevSol)

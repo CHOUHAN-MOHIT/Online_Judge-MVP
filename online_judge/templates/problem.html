@@ -32,7 +32,8 @@
 {% include 'navbar.html' %}
 <div class="flex flex-row w-auto bg-neutral-800 text-white">
     <div class="basis-1/2 h-screen overflow-y-auto px-4">
-        <div class="text-lg mt-16 font-bold">{{ problem.problem_name|title }}</div>
+        <div class="text-base mt-16"><button class="bg-blue-600 px-4 py-1 rounded" onclick="history.go(-1)">&#8592; Back</button></div>
+        <div class="text-lg font-bold">{{ problem.problem_name|title }}</div>
         <div class="my-2">Easy</div>
         <div class="leading-loose my-8">{{problem.problem_desc}}<br> Ipsum sint
             cupiditate eveniet nam non esse delectus maxime perferendis dolorum eum blanditiis, quaerat rem, est
@@ -72,11 +73,11 @@
             </div>
         </div>
         <div class="flex flex-row justify-between bg-green-200 text-green-900 p-2 m-2 rounded hover:font-bold hidden" id="success" >
-            <div class="mx-2">Correct Submission </div>
+            <div class="mx-2">Submission Accepted </div>
             <button class="close font-semibold mx-2 hover:font-bold" onclick="myFunction()">X</button>
         </div>
         <div class="flex flex-row justify-between bg-red-300 text-red-900 p-2 m-2 rounded hover:font-bold hidden" id="failure" >
-            <div class="mx-2">Wrong Submission </div>
+            <div class="mx-2" id="msg">Wrong Submission </div>
             <button class="close font-semibold mx-2 hover:font-bold" onclick="myFunction()">X</button>
         </div>
         <div class="flex flex-row p-2">
@@ -97,7 +98,7 @@
                 </div>Submit</button>
         </div>
         <div class="flex flex-row justify-between p-2 bg-">
-            <textarea id="input" rows="4" class="basis-1/2 text-sm text-[#9ca3a5] rounded-l-md p-2 bg-neutral-700 border-r-2 border-neutral-800" placeholder="Custom Input" style="outline:none;"></textarea>
+            <textarea id="input" rows="4" class="basis-1/2 text-sm text-[#9ca3a5] rounded-l-md p-2 bg-neutral-700 border-r-2 border-neutral-800" placeholder="Custom Input" style="outline:none;" value=" "></textarea>
             <div class="whitespace-pre-line basis-1/2 rounded-r-md p-2 bg-neutral-700 text-[#9ca3a5] text-sm border-l-2 border-neutral-800 overflow-y-auto h-32" id="output">Output</div>
         </div>
     </div>
@@ -140,10 +141,28 @@
                         'X-CSRFToken': csrftoken
                     },
                     success: function (response) {
+                        console.log(response.result);
                         if(response.result == "AC")
-                        document.getElementById("success").style.display="flex";
+                            document.getElementById("success").style.display="flex";
+                        else if(response.result == "CE")
+                        {
+                            document.getElementById("failure").style.display="flex";
+                            document.getElementById("msg").innerHTML="Compilation error";
+
+                        }
                         else if(response.result == "WA")
-                        document.getElementById("failure").style.display="flex";
+                        {
+                            document.getElementById("failure").style.display="flex";
+                            document.getElementById("msg").innerHTML="Wrong Submission ";
+
+                        }
+                        else
+                        {
+                            document.getElementById("failure").style.display="flex";
+                            document.getElementById("msg").innerHTML="Some problem occured while submitting.";
+
+                        }
+                        
 
                         submitBtn.disabled = false;
                         document.getElementById('submitting').style.display="none";
@@ -190,9 +209,9 @@
                     {% comment %} console.log(JSON.stringify(data)); {% endcomment %}
                     let out = document.getElementById('output');
                     if(data.error)
-                        out.innerHTML = data.error;
+                        out.innerHTML = '<span class="text-red-600 text-sm">Compilation error!!</span>\n' + data.error;
                     else
-                        out.innerHTML = data.output;
+                        out.innerHTML = 'Output:\n' + data.output;
                     compileBtn.disabled = false;
                     document.getElementById('compiling').style.display="none";
                     compileBtn.classList.remove("text-gray-500","bg-gray-700");
