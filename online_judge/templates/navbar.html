@@ -1,11 +1,11 @@
 {% load static %}
 <nav class="p-2 bg-neutral-700 border-gray-700 absolute top-0 left-0 w-full z-50">
   <div class="container flex flex-wrap items-center justify-between mx-auto">
-    <a href="{% url 'judge:problems' %}" class="flex items-center">
+    <a href="{% url 'judge:index' %}" class="flex items-center ml-4">
         <img src="{% static 'images/oj-logo-1.png' %}" class="h-6 pr-3 sm:h-9" alt="Flowbite Logo" />
         <span class="self-center text-xl font-semibold whitespace-nowrap text-white">ONLINE JUDGE</span>
     </a>
-    <div class="flex items-center md:order-2">
+    <div class="flex items-center md:order-2 mr-4">
       {% if request.user.is_authenticated %}
       <button type="button" class="flex mx-2 text-sm bg-neutral-600 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-600">
         <div  class="mx-2 text-base font-semibold text-white">Hi, {{user.first_name | title}} </div>
@@ -13,7 +13,8 @@
       </button>
       <a href="{% url 'judge:logout' %}" class="text-base px-2 font-medium text-blue-500 hover:underline">Logout</a>
       {% else %}
-      <a href="{% url 'judge:login' %}" class="text-base px-2 font-medium text-blue-500 hover:underline">Login</a>{% endif %}
+      <a href="{% url 'judge:login' %}" class="text-base px-2 font-medium text-blue-500 hover:underline">Login</a>
+      <a href="{% url 'judge:register' %}" class="text-base px-2 font-medium text-blue-500 hover:underline">Register</a>{% endif %}
         
     </div>
     <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="mobile-menu-2">
