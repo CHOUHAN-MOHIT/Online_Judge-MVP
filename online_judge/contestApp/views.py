@@ -5,6 +5,7 @@ import pytz
 import json 
 from django.core.files import File
 from judge import helper
+import requests
 from judge.models import Test , Solution
 
 
@@ -45,29 +46,35 @@ def contest(request , contestId):
     return render(request, 'contestApp/contest_running.html', context)
     
 def contestSubmission(request , problemid):
-    problem = ContestProblem.objects.get(pk=problemid)
-    test = Test.objects.get(problem__problem_name=problem.problem_name)
     if request.method == 'POST':
+        problem = ContestProblem.objects.get(pk=problemid)
+        test = Test.objects.get(problem__problem_name=problem.problem_name)
         # Get the data from the POST request
         data = json.loads(request.body)
         usercode = data['code']
 
-        # Process the usercode
-        # copying the code to file
-        byte_content = usercode.encode()
-        with open('temp.cpp' , 'wb+') as temp_code:
-            temp_code.write(byte_content)
-        temp_code.close()
-        # copying the input and output to file
-        expout = open('exp_out.txt' , 'w')
-        output = open('output.txt' , 'w')
-        expout.write(test.test_output)
-        input = bytes(test.test_input , 'utf-8')
-        # getting verdict
-        helper.runcode(input, output)
-        expout.close()
-        verdict = helper.get_verdict()
 
+        # code = '#include<bits/stdc++.h>\nusing namespace std;\nint main(){\ncout<<"hello world";\nreturn 0;}'
+
+        data = {
+            'code': usercode,
+            'language': 'cpp',
+            'input': test.test_input,
+        }
+        response = requests.post('https://api.codex.jaagrav.in', data=data, headers= {'Content-Type': 'application/x-www-form-urlencoded'})
+
+        if response.status_code == 200:
+            data = response.json()
+            print(data)
+        else:
+            print("Error: ", response.status_code)
+                    
+        verdict = ""
+        if data['output'] == test.test_output:
+            verdict = 'AC'
+        else:
+            verdict = 'WA'
+        print(verdict)
         if verdict == 'AC':
             prevSol = Solution.objects.filter(user = request.user , problem = problem , verdict = 'AC')
             print(prevSol)
@@ -85,8 +92,6 @@ def contestSubmission(request , problemid):
         )
 
         sol.save()
-
-
 
         # Send the result back to the client
         response_data = {'result': verdict}
