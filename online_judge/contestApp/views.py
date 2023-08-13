@@ -83,15 +83,13 @@ def contestSubmission(request , problemid):
         if verdict == 'AC':
             prevSol = Solution.objects.filter(user = request.user , problem = problem , verdict = 'AC')
             print(prevSol)
-            if prevSol.exists():
-                print("point awarded!!")
-            else:
+            if not prevSol.exists():
                 updatescore(request.user, problem)
 
         sol = Solution(
             user = request.user,
             problem=problem,
-            language="cpp",
+            language="c++",
             code_file=usercode,
             verdict=verdict
         )

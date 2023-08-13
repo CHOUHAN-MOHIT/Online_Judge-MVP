@@ -1,5 +1,4 @@
 from sqlite3 import Timestamp
-from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -11,8 +10,11 @@ class Problem(models.Model):
     ('medium' , 'medium'),
     ('easy' , 'easy'),
     )
-    problem_name = models.CharField(max_length=63)
-    problem_desc = models.CharField(max_length=255)
+    problem_name = models.CharField(max_length=64)
+    problem_desc = models.CharField(max_length=1024)
+    example = models.CharField(max_length=1024)
+    input = models.CharField(max_length=1024)
+    output = models.CharField(max_length=1024)
     problem_difficulty = models.CharField(max_length=10, choices=Difficulty_choices)
 
     def __str__(self):
@@ -20,8 +22,8 @@ class Problem(models.Model):
 
 class Test(models.Model):
     problem = models.ForeignKey(Problem , on_delete=models.CASCADE)
-    test_input = models.CharField(max_length=255)
-    test_output = models.CharField(max_length=255)
+    test_input = models.CharField(max_length=1024)
+    test_output = models.CharField(max_length=1024)
 
 
 

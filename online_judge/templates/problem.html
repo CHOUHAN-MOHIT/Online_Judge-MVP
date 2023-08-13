@@ -35,11 +35,7 @@
         <div class="text-base mt-16"><button class="bg-blue-600 px-4 py-1 rounded" onclick="history.go(-1)">&#8592; Back</button></div>
         <div class="text-lg font-bold">{{ problem.problem_name|title }}</div>
         <div class="my-2">Easy</div>
-        <div class="leading-loose my-8">{{problem.problem_desc}}<br> Ipsum sint
-            cupiditate eveniet nam non esse delectus maxime perferendis dolorum eum blanditiis, quaerat rem, est
-            quo. Eveniet a nesciunt, quibusdam illo aperiam modi commodi fugiat.<br> Hic reprehenderitbr error
-            commodi
-            nulla libero, illo cum ea corrupti tempore veritatis corporis distinctio dolore esse dolores!</div>
+        <div class="leading-loose my-8 whitespace-pre-line" id="problem-desc"></div>
 
         {% comment %} <div class="my-8">
             <div class="text-lg">Example 1:</div>
@@ -112,6 +108,8 @@
 <script src="{% static 'js/editor.js' %}"></script>
 
 <script>
+    let desc_container = document.getElementById('problem-desc');
+    desc_container.innerHTML = "{{ problem.problem_desc}}";
 
     function myFunction() {
         document.getElementById("failure").style.display = "none";
@@ -199,7 +197,7 @@
             compileBtn.disabled = true;
             document.getElementById('compiling').style.display="grid";
             compileBtn.classList.add("text-gray-500","bg-gray-700");
-            document.getElementById('output').innerHTML = "got you mohit";
+            document.getElementById('output').innerHTML = 'Output:\n';
 
 
             fetch('https://api.codex.jaagrav.in', options)
