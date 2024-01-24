@@ -12,9 +12,9 @@ class Problem(models.Model):
     )
     problem_name = models.CharField(max_length=64)
     problem_desc = models.CharField(max_length=1024)
-    example = models.CharField(max_length=1024)
-    input = models.CharField(max_length=1024)
-    output = models.CharField(max_length=1024)
+    example = models.CharField(max_length=1024 , default='your_default_value_here')
+    input = models.CharField(max_length=1024 , default='your_default_value_here')
+    output = models.CharField(max_length=1024 , default='your_default_value_here')
     problem_difficulty = models.CharField(max_length=10, choices=Difficulty_choices)
 
     def __str__(self):
