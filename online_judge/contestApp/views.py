@@ -55,19 +55,25 @@ def contestSubmission(request , problemid):
 
 
         # code = '#include<bits/stdc++.h>\nusing namespace std;\nint main(){\ncout<<"hello world";\nreturn 0;}'
+        url = "https://cpp-17-code-compiler.p.rapidapi.com/"
 
-        data = {
+        payload = {
             'code': usercode,
-            'language': 'cpp',
+            "version": "latest",
             'input': test.test_input,
         }
-        response = requests.post('https://api.codex.jaagrav.in', data=data, headers= {'Content-Type': 'application/x-www-form-urlencoded'})
+        headers = {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": "3436a53daemsh72098474fa00240p1b912ajsn554169aa1c13",
+            "X-RapidAPI-Host": "cpp-17-code-compiler.p.rapidapi.com"
+        }
+        response = requests.post(url, json=payload, headers=headers)
 
         verdict = ""
                             
         if response.status_code == 200:
             data = response.json()
-            if data['error']:
+            if not data['cpuTime']:
                 verdict = 'CE'
         else:
             verdict = 'EX'
@@ -82,7 +88,7 @@ def contestSubmission(request , problemid):
 
         if verdict == 'AC':
             prevSol = Solution.objects.filter(user = request.user , problem = problem , verdict = 'AC')
-            print(prevSol)
+            # print(prevSol)
             if not prevSol.exists():
                 updatescore(request.user, problem)
 
@@ -107,18 +113,18 @@ def updatescore(user, problem):
         toUpdate = Scorecard.objects.get(user = user)
         toUpdate.score = toUpdate.score+problem.points
         toUpdate.save()
-        print("final score:" , toUpdate.score , " + " , problem.points)
+        # print("final score:" , toUpdate.score , " + " , problem.points)
     else:
         scorecard = Scorecard(  
             user = user,
             score = problem.points
         )
         scorecard.save()
-        print("initial score:" , scorecard.score)
+        # print("initial score:" , scorecard.score)
 
 def leaderboard(request):
     leaderboard_list = Scorecard.objects.all().order_by("-score")
-    print(leaderboard_list)
+    # print(leaderboard_list)
 
     context = {
         'leaderboard_list':leaderboard_list

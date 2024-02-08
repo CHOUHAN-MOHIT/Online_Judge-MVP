@@ -31,37 +31,22 @@
 {% block body %}
 {% include 'navbar.html' %}
 <div class="flex flex-row w-auto bg-neutral-800 text-white">
+    {% comment %} problem decription section {% endcomment %}
     <div class="basis-1/2 h-screen overflow-y-auto px-4">
         <div class="text-base mt-16"><button class="bg-blue-600 px-4 py-1 rounded" onclick="history.go(-1)">&#8592; Back</button></div>
         <div class="text-lg font-bold">{{ problem.problem_name|title }}</div>
         <div class="my-2">Easy</div>
         <div class="leading-loose my-8 whitespace-pre-line" id="problem-desc"></div>
-
-        {% comment %} <div class="my-8">
-            <div class="text-lg">Example 1:</div>
-            <div class="container bg-neutral-700 rounded-md p-4">
-                <div><span>Input : </span>nums = [2,7,11,15], target = 9</div>
-                <div><span>Output : </span>[0,1]</div>
-                <div><span>Explanation : </span>Because nums[0] + nums[1] == 9, we return [0, 1].</div>
-            </div>
-        </div>
         <div class="my-8">
-            <div class="text-lg">Example 2:</div>
+            <div class="text-lg">Example :</div>
             <div class="container bg-neutral-700 rounded-md p-4">
-                <div><span>Input : </span>nums = [2,7,11,15], target = 9</div>
-                <div><span>Output : </span>[0,1]</div>
-                <div><span>Explanation : </span>Because nums[0] + nums[1] == 9, we return [0, 1].</div>
-            </div>
-        </div> {% endcomment %}
-        <div class="my-8">
-            <div class="text-lg">Example 3:</div>
-            <div class="container bg-neutral-700 rounded-md p-4">
-                <div><span>Input : </span>nums = [2,7,11,15], target = 9</div>
-                <div><span>Output : </span>[0,1]</div>
-                <div><span>Explanation : </span>Because nums[0] + nums[1] == 9, we return [0, 1].</div>
+                <div><span>Input : </span>{{problem.input}}</div>
+                <div><span>Output : </span>{{problem.output}}</div>
+                <div><span>Explanation : </span>{{problem.example}}</div>
             </div>
         </div>
     </div>
+    {% comment %} code editor section {% endcomment %}
     <div class="flex flex-col basis-1/2 h-screen overflow-y-auto pt-14 border-2 border-neutral-900">
         <div class="w-full flex flex-col h-3/4 px-2">
             <div class="flex-1 text-sm">
@@ -108,7 +93,7 @@
 <script src="{% static 'js/editor.js' %}"></script>
 
 <script>
-    let desc_container = document.getElementById('problem-desc');
+    const desc_container = document.getElementById('problem-desc');
     desc_container.innerHTML = "{{ problem.problem_desc}}";
 
     function myFunction() {
@@ -120,9 +105,9 @@
     const submitBtn = document.getElementById("submit");
         submitBtn.addEventListener('click', 
             () => {
-                var code = codeEditor.getValue(); // Get the code from the Ace editor
+                var code = codeEditor.getValue();
                 console.log(code)
-                var url = "/contest/submit/"+{{problemId}}+"/"; // Replace with your API endpoint URL
+                var url = "/contest/submit/"+{{problemId}}+"/";
                 const csrftoken = Cookies.get('csrftoken');
 
                 submitBtn.disabled = true;
@@ -176,35 +161,41 @@
     const compileBtn = document.getElementById('compile');
     compileBtn.addEventListener('click',
         () => {
-            {% comment %} console.log("hello"); {% endcomment %}
-            var code = codeEditor.getValue();
-            var input = document.getElementById('input').value;
-            
-            const data = new URLSearchParams({
-                'code': code,
-                'language': 'cpp',
-                'input': input,
-            });
-            
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: data,
-            };
 
+            var code = codeEditor.getValue();
+            var input = 0;
+            input = document.getElementById('input').value;
+            
             compileBtn.disabled = true;
             document.getElementById('compiling').style.display="grid";
             compileBtn.classList.add("text-gray-500","bg-gray-700");
             document.getElementById('output').innerHTML = 'Output:\n';
 
-
-            fetch('https://api.codex.jaagrav.in', options)
+            {% comment %} const data = new URLSearchParams({
+                'code': code,
+                'language': 'cpp',
+                'input': input,
+            }); {% endcomment %}
+            
+            const options = {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    'X-RapidAPI-Key': '3436a53daemsh72098474fa00240p1b912ajsn554169aa1c13',
+                    'X-RapidAPI-Host': 'cpp-17-code-compiler.p.rapidapi.com'
+                },
+                body: JSON.stringify({
+                    code: code,
+                    version: 'latest',
+                    input: input
+                })
+            };
+            const url = 'https://cpp-17-code-compiler.p.rapidapi.com/';
+            
+            fetch(url, options)
             .then(response => response.json())
             .then(data => 
                 {
-                    {% comment %} console.log(JSON.stringify(data)); {% endcomment %}
                     let out = document.getElementById('output');
                     if(data.error)
                         out.innerHTML = '<span class="text-red-600 text-sm">Compilation error!!</span>\n' + data.error;
