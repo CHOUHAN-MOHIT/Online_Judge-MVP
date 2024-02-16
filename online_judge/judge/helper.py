@@ -1,39 +1,26 @@
 import filecmp
 import subprocess
-from time import sleep
-import docker
 
 
-# def get_verdict(codefile , inputfile):
-#     client = docker.from_env()
-#     containers = client.containers.list()
-#     if containers:
-#         container = containers[0]
-#         if container.status == 'running':
-#             codedest = container.id + ':code.cpp'
-#             filedest = container.id + ':input.txt'
-#             outfile = container.id + ':output.txt'
-#             inputfile = 'media/' + inputfile
-#             subprocess.run(['docker' , 'cp', codefile , codedest])
-#             subprocess.run(['docker' , 'cp', inputfile , filedest])
-#             subprocess.run(['docker' , 'exec' , container.id , 'g++' , 'code.cpp' , '-o' , 'code'])
-#             subprocess.run(['docker' , 'exec' , container.id ,'sh', '-c', './code < input.txt > output.txt'])
-#             subprocess.run(['docker' , 'cp', outfile , 'output.txt'])
-#             return 0
+def execute_code(code, input_data):
+    try:
+        # Save the code to a temporary file
+        with open('temp_code.py', 'w') as file:
+            file.write(code)
+
+        # Run the code in a subprocess with input data
+        process = subprocess.Popen(['python', 'temp_code.py'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate(input=input_data.encode())
+
+        # Check for any errors during code execution
+        if process.returncode != 0:
+            return False, stderr.decode()
         
-#     else:
-#         container = client.containers.run('gcc' , detach=True , tty=True)
-#         status = container.status
-#         codedest = container.id + ':code.cpp'
-#         filedest = container.id + ':input.txt'
-#         outfile = container.id + ':output.txt'
-#         inputfile = 'media/' + inputfile
-#         subprocess.run(['docker' , 'cp', codefile , codedest])
-#         subprocess.run(['docker' , 'cp', inputfile , filedest])
-#         subprocess.run(['docker' , 'exec' , container.id , 'g++' , 'code.cpp' , '-o' , 'code'])
-#         subprocess.run(['docker' , 'exec' , container.id ,'sh', '-c', './code < input.txt > output.txt'])
-#         subprocess.run(['docker' , 'cp', outfile , 'output.txt'])
-#         return 12
+        return True, stdout.decode()
+    
+    except Exception as e:
+        return False, str(e)
+
 
 
 def runcode(inputfile , generated_output ):
